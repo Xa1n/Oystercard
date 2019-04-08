@@ -18,4 +18,12 @@ RSpec.describe Oystercard do
       expect { subject.top_up(amount)}.to raise_error("Cannot add #{amount} to card. #{LIMIT} maximum limit exceeded")
     end
   end
+
+  describe "#deduct" do
+    it "deducts fare from balance" do
+      subject.top_up(20)
+      fare = 10
+      expect {subject.deduct(fare)}.to change { subject.balance }.from(20).to(10)
+    end
+  end
 end

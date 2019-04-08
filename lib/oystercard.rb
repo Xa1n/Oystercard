@@ -13,8 +13,13 @@ class Oystercard
     @balance += amount
   end
 
+  def deduct(fare)
+    @balance -= fare
+  end
+
   # private
+  #
   # def exceed?
-  #   self.top_up > LIMIT
+  #   amount > LIMIT
   # end
 end
