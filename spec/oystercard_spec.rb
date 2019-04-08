@@ -6,9 +6,16 @@ RSpec.describe Oystercard do
     expect(subject.balance).to eq 0
   end
 
-  it "increments the balance" do
-    amount = 10
-     expect { subject.top_up(amount) }.to change { subject.balance }.from(0).to(10)
-  end
+  describe '#top_up' do
+    it "increments the balance" do
+      amount = 10
+       expect { subject.top_up(amount) }.to change { subject.balance }.from(0).to(10)
+    end
 
+    it "prevents top_up to go over the limit" do
+      amount = 100
+      LIMIT = 90
+      expect { subject.top_up(amount)}.to raise_error("Cannot add #{amount} to card. #{LIMIT} maximum limit exceeded")
+    end
+  end
 end
