@@ -26,4 +26,31 @@ RSpec.describe Oystercard do
       expect {subject.deduct(fare)}.to change { subject.balance }.from(20).to(10)
     end
   end
+
+  describe "#state" do
+    it "evaluates the state of the card" do
+      expect(subject.state).to eq false
+    end
+  end
+
+  describe "#touch_in" do
+    it "begins the journey" do
+      expect { subject.touch_in }.to change { subject.state}.from(false).to(true)
+    end
+  end
+
+  describe "#touch_out" do
+    it "ends the journey" do
+      subject.touch_in
+      expect { subject.touch_out }.to change { subject.state}.from(true).to(false)
+    end
+  end
+
+  describe "#in_journey" do
+    it "tests if in_journey" do
+      expect(subject.in_journey?).to be false
+      subject.touch_in
+      expect(subject.in_journey?).to be true
+    end
+  end
 end

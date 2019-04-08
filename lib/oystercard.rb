@@ -1,11 +1,12 @@
 class Oystercard
 
-  attr_reader :balance
+  attr_reader :balance, :state
 
   LIMIT = 90
 
   def initialize
     @balance = 0
+    @state = false
   end
 
   def top_up(amount)
@@ -17,7 +18,18 @@ class Oystercard
     @balance -= fare
   end
 
-  # private
+  def touch_in
+    @state = true
+  end
+
+  def touch_out
+    @state = false
+  end
+
+  def in_journey?
+    @state == true
+  end
+
   #
   # def exceed?
   #   amount > LIMIT
