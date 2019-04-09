@@ -1,6 +1,6 @@
 class Oystercard
 
-  attr_reader :balance, :entry_station, :exit_station, :trips
+  attr_reader :balance, :entry_station, :exit_station, :journeys
 
   LIMIT = 90
   MIN = 1
@@ -9,7 +9,7 @@ class Oystercard
     @balance = 0
     @entry_station = entry_station
     @exit_station = exit_station
-    @trips = []
+    @journeys = []
   end
 
   def top_up(amount)
@@ -19,7 +19,9 @@ class Oystercard
 
   def touch_in(station)
     fail "Minimum balance not met" if @balance < MIN
+
     @entry_station = station
+    entry = {:Entry => station}
 
   end
 
