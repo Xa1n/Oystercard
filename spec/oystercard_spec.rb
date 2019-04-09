@@ -17,6 +17,7 @@ RSpec.describe Oystercard do
       LIMIT = 90
       expect { subject.top_up(amount)}.to raise_error("Cannot add #{amount} to card. #{LIMIT} maximum limit exceeded")
     end
+
   end
 
   describe "#deduct" do
@@ -35,20 +36,32 @@ RSpec.describe Oystercard do
 
   describe "#touch_in" do
     it "begins the journey" do
-      expect { subject.touch_in }.to change { subject.state}.from(false).to(true)
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
+      subject.touch_in
+      expect(subject.state).to be true
+    end
+
+    it "prevents touch_in from working if minimum balance isn't met" do
+      expect {subject.touch_in}.to raise_error "Minimum balance not met"
     end
   end
 
   describe "#touch_out" do
     it "ends the journey" do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
       subject.touch_in
       expect { subject.touch_out }.to change { subject.state}.from(true).to(false)
     end
   end
 
   describe "#in_journey" do
-    it "tests if in_journey" do
+    it "tests if not in_journey" do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
       expect(subject.in_journey?).to be false
+    end
+
+    it "tests if in_journey" do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
       subject.touch_in
       expect(subject.in_journey?).to be true
     end

@@ -3,6 +3,7 @@ class Oystercard
   attr_reader :balance, :state
 
   LIMIT = 90
+  MIN = 1
 
   def initialize
     @balance = 0
@@ -19,6 +20,7 @@ class Oystercard
   end
 
   def touch_in
+    fail "Minimum balance not met" if @balance < MIN
     @state = true
   end
 
@@ -30,8 +32,8 @@ class Oystercard
     @state == true
   end
 
-  #
-  # def exceed?
-  #   amount > LIMIT
-  # end
+  private
+  def exceed?
+    top_up(amount) > LIMIT
+  end
 end
