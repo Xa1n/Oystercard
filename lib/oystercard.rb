@@ -15,16 +15,13 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
   def touch_in
     fail "Minimum balance not met" if @balance < MIN
     @state = true
   end
 
   def touch_out
+    deduct(MIN)
     @state = false
   end
 
@@ -33,7 +30,12 @@ class Oystercard
   end
 
   private
-  def exceed?
-    top_up(amount) > LIMIT
+
+  def deduct(fare)
+    @balance -= fare
   end
+
+  # def exceed?
+  #   top_up(amount) > LIMIT
+  # end
 end

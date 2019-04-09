@@ -20,13 +20,13 @@ RSpec.describe Oystercard do
 
   end
 
-  describe "#deduct" do
-    it "deducts fare from balance" do
-      subject.top_up(20)
-      fare = 10
-      expect {subject.deduct(fare)}.to change { subject.balance }.from(20).to(10)
-    end
-  end
+  # describe "#deduct" do
+  #   it "deducts fare from balance" do
+  #     subject.top_up(20)
+  #     fare = 10
+  #     expect {subject.deduct(fare)}.to change { subject.balance }.from(20).to(10)
+  #   end
+  # end
 
   describe "#state" do
     it "evaluates the state of the card" do
@@ -51,6 +51,11 @@ RSpec.describe Oystercard do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
       subject.touch_in
       expect { subject.touch_out }.to change { subject.state}.from(true).to(false)
+    end
+
+    it "deducts fare from balance" do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
+      expect { subject.touch_out }.to change {subject.balance}.by(-Oystercard::MIN)
     end
   end
 
