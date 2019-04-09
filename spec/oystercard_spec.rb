@@ -2,6 +2,8 @@ require 'oystercard'
 
 RSpec.describe Oystercard do
 
+  let(:station) { double :station}
+
   it "initializes card with default balance" do
     expect(subject.balance).to eq 0
   end
@@ -37,19 +39,26 @@ RSpec.describe Oystercard do
   describe "#touch_in" do
     it "begins the journey" do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject.state).to be true
     end
 
     it "prevents touch_in from working if minimum balance isn't met" do
-      expect {subject.touch_in}.to raise_error "Minimum balance not met"
+      expect {subject.touch_in(station) }.to raise_error "Minimum balance not met"
+    end
+
+    it "remembers entry station" do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
+      allow(subject).to receive(:entry_station) { station }
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq(station)
     end
   end
 
   describe "#touch_out" do
     it "ends the journey" do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
-      subject.touch_in
+      subject.touch_in(station)
       expect { subject.touch_out }.to change { subject.state}.from(true).to(false)
     end
 
@@ -67,7 +76,7 @@ RSpec.describe Oystercard do
 
     it "tests if in_journey" do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject.in_journey?).to be true
     end
   end
