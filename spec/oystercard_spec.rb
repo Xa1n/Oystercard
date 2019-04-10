@@ -38,11 +38,15 @@ RSpec.describe Oystercard do
       expect(subject.in_journey?).to be true
     end
 
-    it "logs entry station" do
-      subject.instance_variable_set(:@balance, Oystercard::MIN)
-      station = "Liverpool"
-      expect(subject.touch_in(station)).to have_key(:Entry)
-    end
+    # it "logs entry station" do
+    #   subject.instance_variable_set(:@balance, Oystercard::MIN)
+    #   expect(subject.touch_in(entry_station)).to eq([{Entry: entry_station}])
+    # end
+    #
+    # it "logs exit station" do
+    #   subject.instance_variable_set(:@balance, Oystercard::MIN)
+    #   expect(subject.touch_out(exit_station)).to eq([{Exit: exit_station}])
+    # end
 
     it "prevents touch_in from working if minimum balance isn't met" do
       expect {subject.touch_in(entry_station) }.to raise_error "Minimum balance not met"
