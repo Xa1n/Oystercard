@@ -26,9 +26,10 @@ class Oystercard
 
   def touch_out(station)
     deduct(MIN)
-    @entry_station = nil
     @trip[:Exit] = station
-    @trips << @trip
+    store
+    @entry_station = nil
+    @exit_station = station
   end
 
   def in_journey?
@@ -40,6 +41,10 @@ class Oystercard
 
   def deduct(fare)
     @balance -= fare
+  end
+
+  def store
+    @trips << @trip
   end
 
   # def exceed?

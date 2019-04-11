@@ -5,8 +5,20 @@ RSpec.describe Oystercard do
   let(:entry_station) { double :station }
   let(:exit_station) { double :station }
 
-  it "initializes card with default balance" do
+  describe '#trips' do
+    let(:trip) { {Entry: entry_station, Exit: exit_station} }
+
+    it 'stores a trip' do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+      expect(subject.trips).to include trip
+    end
+  end
+
+  it "initializes card with default balance and an empty list of journeys" do
     expect(subject.balance).to eq 0
+    expect(subject.trips).to be_empty
   end
 
   describe '#top_up' do
@@ -20,16 +32,7 @@ RSpec.describe Oystercard do
       LIMIT = 90
       expect { subject.top_up(amount)}.to raise_error("Cannot add #{amount} to card. #{LIMIT} maximum limit exceeded")
     end
-
   end
-
-  # describe "#deduct" do
-  #   it "deducts fare from balance" do
-  #     subject.top_up(20)
-  #     fare = 10
-  #     expect {subject.deduct(fare)}.to change { subject.balance }.from(20).to(10)
-  #   end
-  # end
 
   describe "#touch_in" do
     it "begins the journey" do
@@ -37,16 +40,6 @@ RSpec.describe Oystercard do
       subject.touch_in(entry_station)
       expect(subject.in_journey?).to be true
     end
-
-    # it "logs entry station" do
-    #   subject.instance_variable_set(:@balance, Oystercard::MIN)
-    #   expect(subject.touch_in(entry_station)).to eq([{Entry: entry_station}])
-    # end
-    #
-    # it "logs exit station" do
-    #   subject.instance_variable_set(:@balance, Oystercard::MIN)
-    #   expect(subject.touch_out(exit_station)).to eq([{Exit: exit_station}])
-    # end
 
     it "prevents touch_in from working if minimum balance isn't met" do
       expect {subject.touch_in(entry_station) }.to raise_error "Minimum balance not met"
@@ -68,16 +61,20 @@ RSpec.describe Oystercard do
 
     it "deducts fare from balance" do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
+      subject.touch_in(entry_station)
       expect { subject.touch_out(exit_station) }.to change {subject.balance}.by(-Oystercard::MIN)
     end
 
     it "forgets entry station" do
+      subject.instance_variable_set(:@balance, Oystercard::MIN)
+      subject.touch_in(entry_station)
       subject.touch_out(exit_station)
       expect(subject.entry_station).to eq nil
     end
 
     it "remembers exit station" do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
+      subject.touch_in(entry_station)
       subject.touch_out(exit_station)
       expect(subject.exit_station).to eq(exit_station)
     end
