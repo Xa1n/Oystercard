@@ -6,19 +6,19 @@ RSpec.describe Oystercard do
   let(:exit_station) { double :station }
 
   describe '#trips' do
-    let(:trip) { {Entry: entry_station, Exit: exit_station} }
+    let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
 
     it 'stores a trip' do
       subject.instance_variable_set(:@balance, Oystercard::MIN)
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
-      expect(subject.trips).to include trip
+      expect(subject.journey_history).to include journey
     end
   end
 
   it "initializes card with default balance and an empty list of journeys" do
     expect(subject.balance).to eq 0
-    expect(subject.trips).to be_empty
+    expect(subject.journey_history).to be_empty
   end
 
   describe '#top_up' do

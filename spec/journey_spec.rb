@@ -18,9 +18,10 @@ RSpec.describe Journey do
   end
 
   context 'given an entry station' do
-    subject { described_class.new(entry_station: station) }
+    subject { described_class.new }
 
     it 'has an entry station' do
+      subject.start(station)
       expect(subject.entry_station).to eq station
     end
   end

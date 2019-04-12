@@ -3,14 +3,14 @@ require_relative 'journey'
 
 class Oystercard
 
-  attr_reader :balance, :trips
+  attr_reader :balance, :journey_history, :journey
 
   LIMIT = 90
   MIN = 1
 
   def initialize
     @balance = 0
-    @trips = []
+    @journey_history = []
   end
 
   def top_up(amount)
@@ -21,13 +21,16 @@ class Oystercard
   def touch_in(station)
     fail "Minimum balance not met" if @balance < MIN
 
-    @trip = {}
-    @trip[:Entry] = station
+    @journey = Journey.new
+    @journey.entry_station = station
+
   end
 
   def touch_out(station)
     deduct(MIN)
-    @trip[:Exit] = station
+
+    @journey.exit_station = station
+
     store
   end
 
@@ -38,7 +41,7 @@ class Oystercard
   end
 
   def store
-    @trips << @trip
+    @journey_history << @journey.log
   end
 
   # def exceed?
